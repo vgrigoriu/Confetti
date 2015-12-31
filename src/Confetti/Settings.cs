@@ -35,5 +35,22 @@
 
             return result.Value;
         }
+
+        public T GetSettingOrDefault<T>(string key, T defaultValue)
+        {
+            string rawValue;
+            if (!source.TryGetRawSetting(key, out rawValue))
+            {
+                return defaultValue;
+            }
+
+            var result = parser.Parse<T>(rawValue);
+            if (result.IsFailure)
+            {
+                return defaultValue;
+            }
+
+            return result.Value;
+        }
     }
 }

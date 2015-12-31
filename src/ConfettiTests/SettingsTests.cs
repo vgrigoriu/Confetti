@@ -59,5 +59,25 @@ namespace ConfettiTests
             Assert.Equal("this is not an int", exception.Value);
             Assert.Equal(typeof(int), exception.ValueType);
         }
+
+        [Fact]
+        public void GetSettingOrDefaultReturnsDefaultValueForMissingKey()
+        {
+            var sut = new Settings(settingsSource, new TestSettingParser());
+
+            var setting = sut.GetSettingOrDefault("NonExistingStringKey", "Default value");
+
+            Assert.Equal("Default value", setting);
+        }
+
+        [Fact]
+        public void GetSettingOrDefaultReturnsDefaultValueForMalformedValue()
+        {
+            var sut = new Settings(settingsSource, new TestSettingParser());
+
+            var setting = sut.GetSettingOrDefault(MalformedIntKey, -126);
+
+            Assert.Equal(-126, setting);
+        }
     }
 }
