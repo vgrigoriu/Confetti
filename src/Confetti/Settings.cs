@@ -28,7 +28,7 @@
             var result = parser.Parse<T>(rawValue);
             if (result.IsFailure)
             {
-                throw new MalformedValueException();
+                throw new MalformedValueException(key, rawValue, typeof(T));
             }
 
             return result.Value;

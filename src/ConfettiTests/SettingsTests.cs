@@ -40,8 +40,12 @@ namespace ConfettiTests
         {
             var sut = new Settings(new TestSettingsSource(), new TestSettingParser());
 
-            Assert.Throws<MalformedValueException>(
+            var exception = Assert.Throws<MalformedValueException>(
                 () => sut.GetSetting<int>("MalformedIntKey"));
+
+            Assert.Equal("MalformedIntKey", exception.Key);
+            Assert.Equal("this is not an int", exception.Value);
+            Assert.Equal(typeof(int), exception.ValueType);
         }
     }
 
