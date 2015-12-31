@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using Confetti;
 using Xunit;
 
@@ -6,28 +6,40 @@ namespace ConfettiTests
 {
     public class SettingsTests
     {
+        private const string ExistingStringKey = "ExistingStringKey";
+        private const string ExistingIntKey = "ExistingIntKey";
+        private const string MalformedIntKey = "MalformedIntKey";
+
+        private readonly IRawSettingsSource settingsSource = new TestSettingsSource(
+            new Dictionary<string, string>
+            {
+                {ExistingStringKey, "ExistingStringValue"},
+                {ExistingIntKey, "7"},
+                {MalformedIntKey, "this is not an int"}
+            });
+
         [Fact]
         public void CanGetExistingStringSetting()
         {
-            var sut = new Settings(new TestSettingsSource(), new TestSettingParser());
+            var sut = new Settings(settingsSource, new TestSettingParser());
 
-            var setting = sut.GetSetting<string>("ExistingStringKey");
+            var setting = sut.GetSetting<string>(ExistingStringKey);
             Assert.Equal("ExistingStringValue", setting);
         }
 
         [Fact]
         public void CanGetParseableIntSetting()
         {
-            var sut = new Settings(new TestSettingsSource(), new TestSettingParser());
+            var sut = new Settings(settingsSource, new TestSettingParser());
 
-            var setting = sut.GetSetting<int>("ExistingIntKey");
+            var setting = sut.GetSetting<int>(ExistingIntKey);
             Assert.Equal(7, setting);
         }
 
         [Fact]
         public void NotExistingStringSettingThrowsMissingKeyException()
         {
-            var sut = new Settings(new TestSettingsSource(), new TestSettingParser());
+            var sut = new Settings(settingsSource, new TestSettingParser());
 
             var exception = Assert.Throws<MissingKeyException>(
                 () => sut.GetSetting<string>("NonExistingStringKey"));
@@ -38,63 +50,14 @@ namespace ConfettiTests
         [Fact]
         public void UnparseableIntSettingThrowsMalformedValueException()
         {
-            var sut = new Settings(new TestSettingsSource(), new TestSettingParser());
+            var sut = new Settings(settingsSource, new TestSettingParser());
 
             var exception = Assert.Throws<MalformedValueException>(
-                () => sut.GetSetting<int>("MalformedIntKey"));
+                () => sut.GetSetting<int>(MalformedIntKey));
 
-            Assert.Equal("MalformedIntKey", exception.Key);
+            Assert.Equal(MalformedIntKey, exception.Key);
             Assert.Equal("this is not an int", exception.Value);
             Assert.Equal(typeof(int), exception.ValueType);
-        }
-    }
-
-    internal class TestSettingsSource : IRawSettingsSource
-    {
-        public bool TryGetRawSetting(string key, out string value)
-        {
-            if (key == "ExistingStringKey")
-            {
-                value = "ExistingStringValue";
-                return true;
-            }
-
-            if (key == "ExistingIntKey")
-            {
-                value = "7";
-                return true;
-            }
-
-            if (key == "MalformedIntKey")
-            {
-                value = "this is not an int";
-                return true;
-            }
-
-            value = null;
-            return false;
-        }
-    }
-
-    internal class TestSettingParser : IRawSettingParser
-    {
-        public Result<T> Parse<T>(string rawSettingValue)
-        {
-            if (typeof (T) == typeof (string))
-            {
-                // T is string, so it's safe to cast from string to object to T
-                return Result.FromValue((T)(object)rawSettingValue);
-            }
-
-            if (typeof (T) == typeof (int))
-            {
-                int result;
-                return int.TryParse(rawSettingValue, out result)
-                    ? Result.FromValue((T) (object) result)
-                    : Result<T>.Failure;
-            }
-
-            return Result<T>.Failure;
         }
     }
 }
