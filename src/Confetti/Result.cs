@@ -17,7 +17,7 @@ namespace Confetti
         // a failure
         private Result()
         {
-            isFailed = true;
+            isFailure = true;
         }
 
         internal Result(T value)
@@ -31,7 +31,7 @@ namespace Confetti
         {
             get
             {
-                if (isFailed)
+                if (isFailure)
                 {
                     throw new InvalidOperationException("Cannot get value of failed result");
                 }
@@ -40,8 +40,8 @@ namespace Confetti
             }
         }
 
-        private readonly bool isFailed;
+        private readonly bool isFailure;
 
-        public bool IsFailed => isFailed;
+        public bool IsFailure => isFailure;
     }
 }

@@ -20,18 +20,18 @@
         public T GetSetting<T>(string key)
         {
             string rawValue;
-            if (source.TryGetRawSetting(key, out rawValue))
+            if (!source.TryGetRawSetting(key, out rawValue))
             {
-                var result = parser.Parse<T>(rawValue);
-                if (result.IsFailed)
-                {
-                    throw new MalformedValueException();
-                }
-
-                return result.Value;
+                throw new MissingKeyException(key);
             }
 
-            throw new MissingKeyException(key);
+            var result = parser.Parse<T>(rawValue);
+            if (result.IsFailure)
+            {
+                throw new MalformedValueException();
+            }
+
+            return result.Value;
         }
     }
 }
