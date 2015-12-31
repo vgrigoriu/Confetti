@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Confetti
+﻿namespace Confetti
 {
     public class Settings
     {
@@ -27,82 +25,7 @@ namespace Confetti
                 return parser.Parse<T>(rawValue).Value;
             }
 
-            throw new MissingKeyException();
-        }
-    }
-
-    public interface IRawSettingsSource
-    {
-        bool TryGetRawSetting(string key, out string value);
-    }
-
-    public static class Result
-    {
-        public static Result<T> FromValue<T>(T value)
-        {
-            return new Result<T>(value);
-        }
-    }
-
-    public class Result<T>
-    {
-        public static Result<T> Failure { get; } = new Result<T>();
-
-        // a failure
-        private Result()
-        {
-            isFailed = true;
-        }
-
-        internal Result(T value)
-        {
-            this.value = value;
-        }
-
-        private readonly T value;
-
-        public T Value
-        {
-            get
-            {
-                if (isFailed)
-                {
-                    throw new InvalidOperationException("Cannot get value of failed result");
-                }
-
-                return value;
-            }
-        }
-
-        private readonly bool isFailed;
-
-        public bool IsFailed => isFailed;
-    }
-
-    public interface IRawSettingParser
-    {
-        Result<T> Parse<T>(string rawSettingValue);
-    }
-
-    public class MissingKeyException : Exception
-    {
-        //
-        // For guidelines regarding the creation of new exception types, see
-        //    http://msdn.microsoft.com/library/default.asp?url=/library/en-us/cpgenref/html/cpconerrorraisinghandlingguidelines.asp
-        // and
-        //    http://msdn.microsoft.com/library/default.asp?url=/library/en-us/dncscol/html/csharp07192001.asp
-        //
-
-        public MissingKeyException()
-        {
-        }
-
-        public MissingKeyException(string message) : base(message)
-        {
-        }
-
-        public MissingKeyException(string message, Exception inner) : base(message, inner)
-        {
+            throw new MissingKeyException(key);
         }
     }
 }

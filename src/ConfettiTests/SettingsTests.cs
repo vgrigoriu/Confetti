@@ -20,7 +20,10 @@ namespace ConfettiTests
         {
             var sut = new Settings(new TestSettingsSource(), new TestSettingParser());
 
-            Assert.Throws<MissingKeyException>(() => sut.GetSetting<string>("NonExistingStringKey"));
+            var exception = Assert.Throws<MissingKeyException>(
+                () => sut.GetSetting<string>("NonExistingStringKey"));
+
+            Assert.Equal("NonExistingStringKey", exception.Key);
         }
     }
 
