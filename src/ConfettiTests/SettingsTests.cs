@@ -79,5 +79,14 @@ namespace ConfettiTests
 
             Assert.Equal(-126, setting);
         }
+
+        [Fact]
+        public void GetSettingOrDefaultReturnsParseableIntSetting()
+        {
+            var sut = new Settings(settingsSource, new TestSettingParser());
+
+            var setting = sut.GetSettingOrDefault<int>(ExistingIntKey, -71);
+            Assert.Equal(7, setting);
+        }
     }
 }
