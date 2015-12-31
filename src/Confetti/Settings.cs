@@ -24,7 +24,7 @@ namespace Confetti
             string rawValue;
             if (source.TryGetRawSetting(key, out rawValue))
             {
-                return parser.TryParse<T>(rawValue).Value;
+                return parser.Parse<T>(rawValue).Value;
             }
 
             throw new MissingKeyException();
@@ -81,7 +81,7 @@ namespace Confetti
 
     public interface IRawSettingParser
     {
-        Result<T> TryParse<T>(string rawSettingValue);
+        Result<T> Parse<T>(string rawSettingValue);
     }
 
     public class MissingKeyException : Exception

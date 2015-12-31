@@ -41,7 +41,7 @@ namespace ConfettiTests
 
     internal class TestSettingParser : IRawSettingParser
     {
-        public Result<T> TryParse<T>(string rawSettingValue)
+        public Result<T> Parse<T>(string rawSettingValue)
         {
             if (typeof (T) == typeof (string))
             {
