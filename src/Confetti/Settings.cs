@@ -22,7 +22,13 @@
             string rawValue;
             if (source.TryGetRawSetting(key, out rawValue))
             {
-                return parser.Parse<T>(rawValue).Value;
+                var result = parser.Parse<T>(rawValue);
+                if (result.IsFailed)
+                {
+                    throw new MalformedValueException();
+                }
+
+                return result.Value;
             }
 
             throw new MissingKeyException(key);
