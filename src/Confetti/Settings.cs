@@ -5,6 +5,10 @@
         private readonly IRawSettingsSource source;
         private readonly IRawSettingParser parser;
 
+        public Settings(IRawSettingsSource source) : this(source, new DefaultSettingParser())
+        {
+        }
+
         public Settings(IRawSettingsSource source, IRawSettingParser parser)
         {
             this.source = source;

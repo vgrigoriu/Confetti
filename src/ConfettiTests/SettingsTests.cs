@@ -21,7 +21,7 @@ namespace ConfettiTests
         [Fact]
         public void CanGetExistingStringSetting()
         {
-            var sut = new Settings(settingsSource, new TestSettingParser());
+            var sut = new Settings(settingsSource);
 
             var setting = sut.GetSetting<string>(ExistingStringKey);
             Assert.Equal("ExistingStringValue", setting);
@@ -30,7 +30,7 @@ namespace ConfettiTests
         [Fact]
         public void CanGetParseableIntSetting()
         {
-            var sut = new Settings(settingsSource, new TestSettingParser());
+            var sut = new Settings(settingsSource);
 
             var setting = sut.GetSetting<int>(ExistingIntKey);
             Assert.Equal(7, setting);
@@ -39,7 +39,7 @@ namespace ConfettiTests
         [Fact]
         public void NotExistingStringSettingThrowsMissingKeyException()
         {
-            var sut = new Settings(settingsSource, new TestSettingParser());
+            var sut = new Settings(settingsSource);
 
             var exception = Assert.Throws<MissingKeyException>(
                 () => sut.GetSetting<string>("NonExistingStringKey"));
@@ -50,7 +50,7 @@ namespace ConfettiTests
         [Fact]
         public void UnparseableIntSettingThrowsMalformedValueException()
         {
-            var sut = new Settings(settingsSource, new TestSettingParser());
+            var sut = new Settings(settingsSource);
 
             var exception = Assert.Throws<MalformedValueException>(
                 () => sut.GetSetting<int>(MalformedIntKey));
@@ -63,7 +63,7 @@ namespace ConfettiTests
         [Fact]
         public void GetSettingOrDefaultReturnsDefaultValueForMissingKey()
         {
-            var sut = new Settings(settingsSource, new TestSettingParser());
+            var sut = new Settings(settingsSource);
 
             var setting = sut.GetSettingOrDefault("NonExistingStringKey", "Default value");
 
@@ -73,7 +73,7 @@ namespace ConfettiTests
         [Fact]
         public void GetSettingOrDefaultReturnsDefaultValueForMalformedValue()
         {
-            var sut = new Settings(settingsSource, new TestSettingParser());
+            var sut = new Settings(settingsSource);
 
             var setting = sut.GetSettingOrDefault(MalformedIntKey, -126);
 
@@ -83,9 +83,9 @@ namespace ConfettiTests
         [Fact]
         public void GetSettingOrDefaultReturnsParseableIntSetting()
         {
-            var sut = new Settings(settingsSource, new TestSettingParser());
+            var sut = new Settings(settingsSource);
 
-            var setting = sut.GetSettingOrDefault<int>(ExistingIntKey, -71);
+            var setting = sut.GetSettingOrDefault(ExistingIntKey, -71);
             Assert.Equal(7, setting);
         }
     }
